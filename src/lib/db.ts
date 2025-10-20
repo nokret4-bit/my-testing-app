@@ -33,8 +33,8 @@ if (!dbUrl) {
 const extractHost = (url: string): string => {
   try {
     const match = url.match(/@([^/]+)/);
-    const host = match?.[1];
-    return host ? host.split(":")[0] : "unknown host";
+    if (!match || !match[1]) return "unknown host";
+    return match[1].split(":")[0] || "unknown host";
   } catch {
     return "unknown host";
   }

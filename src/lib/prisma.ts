@@ -22,7 +22,8 @@ const extractHost = (url: string | undefined): string => {
   if (!url) return "unknown host";
   try {
     const match = url.match(/@([^/]+)/);
-    return match && match[1] ? match[1].split(":")[0] : "unknown host";
+    if (!match || !match[1]) return "unknown host";
+    return match[1].split(":")[0] || "unknown host";
   } catch {
     return "unknown host";
   }
