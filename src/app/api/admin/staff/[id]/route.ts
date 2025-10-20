@@ -15,7 +15,7 @@ export async function PATCH(
     }
 
     const body = await request.json();
-    const { name, role, permissions, isActive } = body;
+    const { name, role, isActive } = body;
 
     // Update user
     const user = await prisma.user.update({
@@ -23,7 +23,6 @@ export async function PATCH(
       data: {
         name,
         role,
-        permissions: role === "STAFF" ? permissions : null,
         isActive,
       },
     });
@@ -31,7 +30,7 @@ export async function PATCH(
     // Log audit
     await prisma.auditLog.create({
       data: {
-        userId: session.user.id,
+        userId: session?.user?.id || "",
         action: "UPDATE_STAFF",
         entity: "User",
         entityId: user.id,
@@ -62,7 +61,7 @@ export async function DELETE(
     }
 
     // Prevent deleting yourself
-    if (id === session.user.id) {
+    if (id === session?.user?.id) {
       return NextResponse.json(
         { error: "Cannot delete your own account" },
         { status: 400 }
@@ -77,7 +76,7 @@ export async function DELETE(
     // Log audit
     await prisma.auditLog.create({
       data: {
-        userId: session.user.id,
+        userId: session?.user?.id || "",
         action: "DELETE_STAFF",
         entity: "User",
         entityId: id,

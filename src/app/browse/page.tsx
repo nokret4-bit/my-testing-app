@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { FacilityCard } from "@/components/facility-card";
 
 async function FacilitiesList({ search }: { search: string | undefined }) {
-  const facilities = await prisma.facilities.findMany({
+  const facilities = await prisma.facility.findMany({
     where: { isActive: true },
     orderBy: { name: "asc" },
   });

@@ -11,9 +11,8 @@ export default async function CashierDashboard() {
     redirect("/login");
   }
 
-  // Only CASHIER, STAFF, and ADMIN can access
+  // Only STAFF and ADMIN can access
   if (
-    session.user.role !== "CASHIER" &&
     session.user.role !== "STAFF" &&
     session.user.role !== "ADMIN"
   ) {

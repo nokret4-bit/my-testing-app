@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getServerSession, isAdmin } from "@/lib/auth";
 import bcrypt from "bcryptjs";
+import crypto from "crypto";
 
 export async function POST(request: NextRequest) {
   try {
@@ -39,19 +40,20 @@ export async function POST(request: NextRequest) {
     // Create user
     const user = await prisma.user.create({
       data: {
+        id: crypto.randomUUID(),
         name,
         email,
         passwordHash,
         role,
-        permissions: role === "STAFF" ? permissions : null,
         isActive: true,
+        updatedAt: new Date(),
       },
     });
 
     // Log audit
     await prisma.auditLog.create({
       data: {
-        userId: session.user.id,
+        userId: session?.user?.id || "",
         action: "CREATE_STAFF",
         entity: "User",
         entityId: user.id,

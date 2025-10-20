@@ -68,13 +68,16 @@ export default function NewRatePlanPage() {
     setLoading(true);
 
     try {
+      // Ensure effectiveFrom has a value
+      const effectiveFromDate = (formData.effectiveFrom || new Date().toISOString().split("T")[0]) as string;
+      
       const payload = {
         name: formData.name,
         description: formData.description,
         priceType: formData.priceType,
         basePrice: parseFloat(formData.basePrice),
         currency: formData.currency,
-        effectiveFrom: new Date(formData.effectiveFrom).toISOString(),
+        effectiveFrom: new Date(effectiveFromDate).toISOString(),
         effectiveTo: formData.effectiveTo ? new Date(formData.effectiveTo).toISOString() : null,
         isActive: formData.isActive,
         facilityTypeId: formData.applyTo === "TYPE" ? formData.facilityTypeId : null,

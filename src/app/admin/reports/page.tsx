@@ -280,7 +280,7 @@ export default async function AdminReportsPage() {
                         </Badge>
                       </div>
                       <p className="text-sm text-muted-foreground">
-                        {booking.facilities.name} • {booking.customerName}
+                        {booking.facility.name} • {booking.customerName}
                       </p>
                       <p className="text-xs text-muted-foreground">
                         {format(booking.createdAt, "MMM dd, yyyy")}

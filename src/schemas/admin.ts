@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { FacilityKind, PriceType, BlockType } from "@prisma/client";
+import { FacilityKind } from "@prisma/client";
 
 export const CreateFacilityUnitSchema = z.object({
   facilityTypeId: z.string().min(1, "Facility type is required"),
@@ -17,7 +17,7 @@ export const UpdateFacilityUnitSchema = CreateFacilityUnitSchema.partial().exten
 export const CreateRatePlanSchema = z.object({
   name: z.string().min(2, "Name is required"),
   description: z.string().optional(),
-  priceType: z.nativeEnum(PriceType),
+  priceType: z.enum(["PER_NIGHT", "PER_SLOT"]),
   basePrice: z.number().positive("Price must be positive"),
   currency: z.string().default("PHP"),
   effectiveFrom: z.string().datetime(),
@@ -30,15 +30,6 @@ export const UpdateRatePlanSchema = CreateRatePlanSchema.partial().extend({
   isActive: z.boolean().optional(),
 });
 
-export const CreateAvailabilityBlockSchema = z.object({
-  facilityUnitId: z.string().min(1, "Facility unit is required"),
-  blockType: z.nativeEnum(BlockType),
-  startDate: z.string().datetime(),
-  endDate: z.string().datetime(),
-  reason: z.string().optional(),
-});
-
-export const UpdateAvailabilityBlockSchema = CreateAvailabilityBlockSchema.partial();
 
 export const FacilityQuerySchema = z.object({
   type: z.nativeEnum(FacilityKind).optional(),
@@ -51,6 +42,4 @@ export type CreateFacilityUnitInput = z.infer<typeof CreateFacilityUnitSchema>;
 export type UpdateFacilityUnitInput = z.infer<typeof UpdateFacilityUnitSchema>;
 export type CreateRatePlanInput = z.infer<typeof CreateRatePlanSchema>;
 export type UpdateRatePlanInput = z.infer<typeof UpdateRatePlanSchema>;
-export type CreateAvailabilityBlockInput = z.infer<typeof CreateAvailabilityBlockSchema>;
-export type UpdateAvailabilityBlockInput = z.infer<typeof UpdateAvailabilityBlockSchema>;
 export type FacilityQueryInput = z.infer<typeof FacilityQuerySchema>;

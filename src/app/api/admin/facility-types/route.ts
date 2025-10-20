@@ -9,9 +9,21 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const facilityTypes = await prisma.facilityType.findMany({
-      orderBy: { name: "asc" },
+    // Get distinct facility kinds as facility types
+    const facilities = await prisma.facility.findMany({
+      select: {
+        kind: true,
+      },
+      distinct: ['kind'],
+      orderBy: { kind: "asc" },
     });
+
+    // Transform to match expected format
+    const facilityTypes = facilities.map(f => ({
+      id: f.kind,
+      name: f.kind.charAt(0) + f.kind.slice(1).toLowerCase(),
+      kind: f.kind
+    }));
 
     return NextResponse.json({ facilityTypes });
   } catch (error) {

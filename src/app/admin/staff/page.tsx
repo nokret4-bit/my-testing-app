@@ -80,7 +80,7 @@ export default async function StaffManagementPage() {
                         </p>
                       </div>
                       <div className="flex gap-2 ml-4">
-                        <EditStaffButton user={user} />
+                        <EditStaffButton user={{...user, permissions: {}}} />
                         {user.id !== session?.user?.id && (
                           <DeleteStaffButton userId={user.id} userName={user.name || user.email} />
                         )}

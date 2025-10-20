@@ -10,8 +10,7 @@ export function StatusBadge({ status }: StatusBadgeProps) {
     BookingStatus,
     { variant: "default" | "secondary" | "destructive" | "outline"; label: string }
   > = {
-    AWAITING_PAYMENT: { variant: "outline", label: "Awaiting Payment" },
-    PAID: { variant: "default", label: "Paid" },
+    PENDING: { variant: "outline", label: "Pending" },
     CONFIRMED: { variant: "default", label: "Confirmed" },
     CANCELLED: { variant: "destructive", label: "Cancelled" },
     COMPLETED: { variant: "secondary", label: "Completed" },

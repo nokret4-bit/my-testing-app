@@ -1,71 +1,24 @@
 import { prisma } from "@/lib/prisma";
 import { BookingStatus } from "@prisma/client";
-import { startOfDay, endOfDay, eachDayOfInterval, differenceInDays } from "date-fns";
-
-export interface AvailabilityCheck {
-  available: boolean;
-  reason?: string;
-}
+import { eachDayOfInterval, differenceInDays } from "date-fns";
 
 export async function checkAvailability(
-  facilityUnitId: string,
+  facilityId: string,
   startDate: Date,
   endDate: Date
-): Promise<AvailabilityCheck> {
+): Promise<boolean> {
   // Validate date range (max 1 year)
   const daysDiff = differenceInDays(endDate, startDate);
-  if (daysDiff > 365) {
-    return {
-      available: false,
-      reason: "Booking period cannot exceed 365 days",
-    };
-  }
-  if (daysDiff < 0) {
-    return {
-      available: false,
-      reason: "Check-out date must be after check-in date",
-    };
-  }
-  // Check for availability blocks (maintenance/blackout)
-  const blocks = await prisma.availabilityBlock.findMany({
-    where: {
-      facilityUnitId,
-      OR: [
-        {
-          AND: [
-            { startDate: { lte: startDate } },
-            { endDate: { gte: startDate } },
-          ],
-        },
-        {
-          AND: [
-            { startDate: { lte: endDate } },
-            { endDate: { gte: endDate } },
-          ],
-        },
-        {
-          AND: [
-            { startDate: { gte: startDate } },
-            { endDate: { lte: endDate } },
-          ],
-        },
-      ],
-    },
-  });
-
-  if (blocks.length > 0) {
-    return {
-      available: false,
-      reason: `Facility is blocked: ${blocks[0]?.reason || blocks[0]?.blockType}`,
-    };
+  if (daysDiff > 365 || daysDiff < 0) {
+    return false;
   }
 
   // Check for overlapping bookings
   const overlappingBookings = await prisma.booking.findMany({
     where: {
-      facilityUnitId,
+      facilityId,
       status: {
-        in: [BookingStatus.AWAITING_PAYMENT, BookingStatus.PAID, BookingStatus.CONFIRMED],
+        in: [BookingStatus.CONFIRMED],
       },
       OR: [
         {
@@ -90,52 +43,27 @@ export async function checkAvailability(
     },
   });
 
-  if (overlappingBookings.length > 0) {
-    return {
-      available: false,
-      reason: "Facility is already booked for the selected dates",
-    };
-  }
-
-  // Check inventory calendar
-  // Use date range query instead of 'in' to avoid bind variable limit
-  const inventoryChecks = await prisma.inventoryCalendar.findMany({
-    where: {
-      facilityUnitId,
-      date: {
-        gte: startOfDay(startDate),
-        lte: startOfDay(endDate),
-      },
-    },
-  });
-
-  const unavailableDates = inventoryChecks.filter((inv) => inv.available <= 0);
-  if (unavailableDates.length > 0) {
-    return {
-      available: false,
-      reason: "No inventory available for selected dates",
-    };
-  }
-
-  return { available: true };
+  return overlappingBookings.length === 0;
 }
 
-export async function getAvailabilityForRange(
-  facilityUnitId: string,
+export async function getAvailabilityCalendar(
+  facilityId: string,
   startDate: Date,
   endDate: Date
-): Promise<Map<string, boolean>> {
-  const dates = eachDayOfInterval({ start: startDate, end: endDate });
-  const availabilityMap = new Map<string, boolean>();
+): Promise<Array<{ date: Date; available: boolean }>> {
+  const days = eachDayOfInterval({ start: startDate, end: endDate });
+  const availability = [];
 
-  for (const date of dates) {
-    const check = await checkAvailability(
-      facilityUnitId,
-      startOfDay(date),
-      endOfDay(date)
-    );
-    availabilityMap.set(date.toISOString().split("T")[0] || "", check.available);
+  for (const day of days) {
+    const nextDay = new Date(day);
+    nextDay.setDate(nextDay.getDate() + 1);
+    
+    const isAvailable = await checkAvailability(facilityId, day, nextDay);
+    availability.push({
+      date: day,
+      available: isAvailable,
+    });
   }
 
-  return availabilityMap;
+  return availability;
 }

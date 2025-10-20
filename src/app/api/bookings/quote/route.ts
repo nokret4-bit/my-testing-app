@@ -14,10 +14,10 @@ export async function POST(request: NextRequest) {
     const endDate = parseISO(validated.endDate);
 
     // Check availability
-    const availCheck = await checkAvailability(validated.unitId, startDate, endDate);
-    if (!availCheck.available) {
+    const isAvailable = await checkAvailability(validated.unitId, startDate, endDate);
+    if (!isAvailable) {
       return NextResponse.json(
-        { error: availCheck.reason || "Facility not available" },
+        { error: "Facility not available" },
         { status: 400 }
       );
     }

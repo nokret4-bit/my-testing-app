@@ -76,7 +76,7 @@ export async function POST(
     });
 
     // Send cancellation email
-    const html = render(
+    const html = await render(
       BookingCancelledEmail({
         bookingCode: booking.code,
         customerName: booking.customerName,

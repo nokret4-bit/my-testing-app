@@ -27,7 +27,7 @@ export async function Navbar() {
                   <Button variant="ghost">My Bookings</Button>
                 </Link>
               )}
-              {(session.user.role === "CASHIER" || session.user.role === "STAFF" || session.user.role === "ADMIN") && (
+              {(session.user.role === "STAFF" || session.user.role === "ADMIN") && (
                 <Link href="/cashier">
                   <Button variant="outline">Cashier Dashboard</Button>
                 </Link>

@@ -21,12 +21,8 @@ export default async function BookingsPage() {
       userId: session.user.id,
     },
     include: {
-      facilityUnit: {
-        include: {
-          facilityType: true,
-        },
-      },
-      payments: true,
+      facility: true,
+      payment: true,
     },
     orderBy: { createdAt: "desc" },
   });
@@ -60,7 +56,7 @@ export default async function BookingsPage() {
                 <CardHeader>
                   <div className="flex items-start justify-between">
                     <div>
-                      <CardTitle>{booking.facilityUnit.name}</CardTitle>
+                      <CardTitle>{booking.facility.name}</CardTitle>
                       <CardDescription className="mt-1">
                         Booking Code: {booking.code}
                       </CardDescription>

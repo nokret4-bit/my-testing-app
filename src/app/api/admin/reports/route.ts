@@ -49,12 +49,8 @@ async function getRevenueReport(startDate: Date, endDate: Date) {
       },
     },
     include: {
-      facilityUnit: {
-        include: {
-          facilityType: true,
-        },
-      },
-      payments: true,
+      facility: true,
+      payment: true,
     },
   });
 
@@ -65,7 +61,7 @@ async function getRevenueReport(startDate: Date, endDate: Date) {
 
   const revenueByType = bookings.reduce(
     (acc, booking) => {
-      const type = booking.facilityUnit.facilityType.kind;
+      const type = booking.facility.kind;
       acc[type] = (acc[type] || 0) + Number(booking.totalAmount);
       return acc;
     },
@@ -90,11 +86,7 @@ async function getBookingsReport(startDate: Date, endDate: Date) {
       },
     },
     include: {
-      facilityUnit: {
-        include: {
-          facilityType: true,
-        },
-      },
+      facility: true,
     },
   });
 
@@ -108,7 +100,7 @@ async function getBookingsReport(startDate: Date, endDate: Date) {
 
   const bookingsByType = bookings.reduce(
     (acc, booking) => {
-      const type = booking.facilityUnit.facilityType.kind;
+      const type = booking.facility.kind;
       acc[type] = (acc[type] || 0) + 1;
       return acc;
     },
@@ -125,10 +117,9 @@ async function getBookingsReport(startDate: Date, endDate: Date) {
 }
 
 async function getOccupancyReport(startDate: Date, endDate: Date) {
-  const facilities = await prisma.facilityUnit.findMany({
+  const facilities = await prisma.facility.findMany({
     where: { isActive: true },
     include: {
-      facilityType: true,
       bookings: {
         where: {
           status: {
@@ -147,8 +138,8 @@ async function getOccupancyReport(startDate: Date, endDate: Date) {
   const totalCapacity = totalDays * totalUnits;
 
   let occupiedDays = 0;
-  facilities.forEach((facility) => {
-    facility.bookings.forEach((booking) => {
+  facilities.forEach((facility: any) => {
+    facility.bookings.forEach((booking: any) => {
       const bookingDays = eachDayOfInterval({
         start: booking.startDate > startDate ? booking.startDate : startDate,
         end: booking.endDate < endDate ? booking.endDate : endDate,

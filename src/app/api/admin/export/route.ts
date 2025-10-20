@@ -28,18 +28,14 @@ export async function GET(request: NextRequest) {
     const bookings = await prisma.booking.findMany({
       where,
       include: {
-        facilityUnit: {
-          include: {
-            facilityType: true,
-          },
-        },
+        facility: true,
         user: {
           select: {
             name: true,
             email: true,
           },
         },
-        payments: true,
+        payment: true,
       },
       orderBy: { createdAt: "desc" },
     });
@@ -63,8 +59,8 @@ export async function GET(request: NextRequest) {
       booking.status,
       booking.customerName,
       booking.customerEmail,
-      booking.facilityUnit.name,
-      booking.facilityUnit.facilityType.kind,
+      booking.facility.name,
+      booking.facility.kind,
       booking.startDate.toISOString(),
       booking.endDate.toISOString(),
       booking.totalAmount.toString(),

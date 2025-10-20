@@ -1,12 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { getServerSession } from "@/lib/auth";
 import { CreateBookingSchema } from "@/schemas/booking";
-import { checkAvailability } from "@/lib/availability";
+import { BookingStatus } from "@prisma/client";
 import { calculatePrice } from "@/lib/pricing";
 import { generateBookingCode } from "@/lib/utils";
-import { getServerSession } from "@/lib/auth";
-import { parseISO, addMinutes } from "date-fns";
-import { BookingStatus } from "@prisma/client";
+import { addMinutes } from "date-fns";
+import crypto from "crypto";
+import { parseISO } from "date-fns";
+import { checkAvailability } from "@/lib/availability";
 
 export async function POST(request: NextRequest) {
   try {
@@ -18,10 +20,10 @@ export async function POST(request: NextRequest) {
     const endDate = parseISO(validated.endDate);
 
     // Check availability
-    const availCheck = await checkAvailability(validated.unitId, startDate, endDate);
-    if (!availCheck.available) {
+    const isAvailable = await checkAvailability(validated.unitId, startDate, endDate);
+    if (!isAvailable) {
       return NextResponse.json(
-        { error: availCheck.reason || "Facility not available" },
+        { error: "Facility not available" },
         { status: 400 }
       );
     }
@@ -35,29 +37,27 @@ export async function POST(request: NextRequest) {
 
     const booking = await prisma.booking.create({
       data: {
+        id: crypto.randomUUID(),
         code: bookingCode,
         userId: session?.user?.id,
-        facilityUnitId: validated.unitId,
+        facilityId: validated.unitId,
         startDate,
         endDate,
-        status: BookingStatus.AWAITING_PAYMENT,
+        guests: 1,
+        status: BookingStatus.PENDING,
         customerName: validated.customerName,
         customerEmail: validated.customerEmail,
         customerPhone: validated.customerPhone,
-        specialRequests: validated.specialRequests,
-        subtotal: pricing.subtotal,
-        taxAmount: pricing.taxAmount,
-        feeAmount: pricing.feeAmount,
         totalAmount: pricing.totalAmount,
-        currency: pricing.currency,
-        expiresAt,
+        notes: validated.specialRequests,
+        updatedAt: new Date(),
       },
     });
 
     // Log audit
     await prisma.auditLog.create({
       data: {
-        userId: session?.user?.id,
+        userId: session?.user?.id || "",
         action: "CREATE_BOOKING",
         entity: "Booking",
         entityId: booking.id,
@@ -70,7 +70,6 @@ export async function POST(request: NextRequest) {
       code: booking.code,
       status: booking.status,
       totalAmount: booking.totalAmount,
-      expiresAt: booking.expiresAt,
     });
   } catch (error) {
     console.error("Create booking API error:", error);
@@ -96,12 +95,8 @@ export async function GET(request: NextRequest) {
         userId: session.user.id,
       },
       include: {
-        facilityUnit: {
-          include: {
-            facilityType: true,
-          },
-        },
-        payments: true,
+        facility: true,
+        payment: true,
       },
       orderBy: { createdAt: "desc" },
     });

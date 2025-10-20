@@ -36,11 +36,7 @@ export async function GET(request: NextRequest) {
     const bookings = await prisma.booking.findMany({
       where,
       include: {
-        facilityUnit: {
-          include: {
-            facilityType: true,
-          },
-        },
+        facility: true,
         user: {
           select: {
             id: true,
@@ -48,7 +44,7 @@ export async function GET(request: NextRequest) {
             email: true,
           },
         },
-        payments: true,
+        payment: true,
       },
       orderBy: { createdAt: "desc" },
     });
