@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { NavbarClient } from "@/components/navbar-client";
 import { Footer } from "@/components/footer";
@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { formatCurrency } from "@/lib/utils";
 
-export default function CheckoutPage() {
+function CheckoutContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { toast } = useToast();
@@ -294,5 +294,23 @@ export default function CheckoutPage() {
 
       <Footer />
     </div>
+  );
+}
+
+export default function CheckoutPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex min-h-screen flex-col">
+        <NavbarClient />
+        <main className="flex-1 container mx-auto px-4 py-12">
+          <div className="max-w-2xl mx-auto">
+            <h1 className="text-4xl font-bold mb-8">Loading...</h1>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    }>
+      <CheckoutContent />
+    </Suspense>
   );
 }
