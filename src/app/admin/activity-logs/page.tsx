@@ -16,11 +16,11 @@ export default async function ActivityLogsPage() {
     redirect("/admin");
   }
 
-  const logs = await prisma.activity_logs.findMany({
+  const logs = await prisma.auditLog.findMany({
     take: 100,
     orderBy: { createdAt: "desc" },
     include: {
-      users: {
+      user: {
         select: {
           name: true,
           email: true,
@@ -93,19 +93,17 @@ export default async function ActivityLogsPage() {
                           {formatAction(log.action)}
                         </Badge>
                         <span className="text-sm text-muted-foreground">
-                          {log.entityType}
+                          {log.entity}
                         </span>
                       </div>
                       
-                      <p className="text-sm mb-2">{log.description}</p>
-                      
                       <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                        {log.users && (
+                        {log.user && (
                           <div className="flex items-center gap-1">
                             <User className="h-3 w-3" />
-                            <span>{log.users.name}</span>
+                            <span>{log.user.name}</span>
                             <Badge variant="outline" className="ml-1 text-xs">
-                              {log.users.role}
+                              {log.user.role}
                             </Badge>
                           </div>
                         )}
@@ -113,18 +111,15 @@ export default async function ActivityLogsPage() {
                           <Calendar className="h-3 w-3" />
                           <span>{format(new Date(log.createdAt), "MMM dd, yyyy HH:mm:ss")}</span>
                         </div>
-                        {log.ipAddress && (
-                          <span className="text-muted-foreground">IP: {log.ipAddress}</span>
-                        )}
                       </div>
 
-                      {log.metadata && (
+                      {log.data && (
                         <details className="mt-2">
                           <summary className="text-xs text-muted-foreground cursor-pointer hover:text-foreground">
                             View details
                           </summary>
                           <pre className="mt-2 p-2 bg-muted rounded text-xs overflow-auto">
-                            {JSON.stringify(log.metadata, null, 2)}
+                            {JSON.stringify(log.data, null, 2)}
                           </pre>
                         </details>
                       )}

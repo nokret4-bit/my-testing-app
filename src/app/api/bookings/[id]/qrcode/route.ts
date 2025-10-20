@@ -6,9 +6,10 @@ import { format } from "date-fns";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id: bookingId } = await params;
     const session = await getServerSession();
 
     if (!session?.user) {
@@ -18,17 +19,11 @@ export async function GET(
       );
     }
 
-    const bookingId = params.id;
-
     // Fetch booking with related data
     const booking = await prisma.booking.findUnique({
       where: { id: bookingId },
       include: {
-        facilityUnit: {
-          include: {
-            facilityType: true,
-          },
-        },
+        facility: true,
       },
     });
 
@@ -56,7 +51,7 @@ export async function GET(
       bookingId: booking.id,
       bookingCode: booking.code,
       customerName: booking.customerName,
-      facilityUnit: booking.facilityUnit.name,
+      facilityUnit: booking.facility.name,
       checkInDate: format(booking.startDate, "yyyy-MM-dd"),
     });
 

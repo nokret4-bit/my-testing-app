@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
-    const facilities = await prisma.facilities.findMany({
+    const facilities = await prisma.facility.findMany({
       orderBy: { createdAt: "desc" },
     });
 
@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json();
 
-    const facility = await prisma.facilities.create({
+    const facility = await prisma.facility.create({
       data: {
         id: `fac${Date.now()}`,
         name: body.name,

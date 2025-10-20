@@ -4,10 +4,11 @@ import { getServerSession, isAdmin } from "@/lib/auth";
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession();
+    const { id } = await params;
     
     // Only admins can edit bookings
     if (!isAdmin(session)) {
@@ -21,20 +22,20 @@ export async function PATCH(
       customerPhone,
       startDate,
       endDate,
-      specialRequests,
+      notes,
       status,
     } = body;
 
     // Update booking
     const booking = await prisma.booking.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         customerName,
         customerEmail,
         customerPhone,
         startDate: new Date(startDate),
         endDate: new Date(endDate),
-        specialRequests,
+        notes,
         status,
       },
     });
@@ -64,10 +65,11 @@ export async function PATCH(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession();
+    const { id } = await params;
     
     // Only admins can delete bookings
     if (!isAdmin(session)) {
@@ -75,7 +77,7 @@ export async function DELETE(
     }
 
     const booking = await prisma.booking.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
 
     if (!booking) {
@@ -84,16 +86,16 @@ export async function DELETE(
 
     // Delete related records first
     await prisma.payment.deleteMany({
-      where: { bookingId: params.id },
+      where: { bookingId: id },
     });
 
     await prisma.auditLog.deleteMany({
-      where: { entityId: params.id, entity: "Booking" },
+      where: { entityId: id, entity: "Booking" },
     });
 
     // Delete booking
     await prisma.booking.delete({
-      where: { id: params.id },
+      where: { id },
     });
 
     // Log audit
@@ -103,7 +105,7 @@ export async function DELETE(
           userId: session.user.id,
           action: "DELETE_BOOKING",
           entity: "Booking",
-          entityId: params.id,
+          entityId: id,
           data: { code: booking.code },
         },
       });

@@ -9,14 +9,15 @@ import Link from "next/link";
 import { Users, Wifi, Wind } from "lucide-react";
 
 interface UnitPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export default async function UnitPage({ params }: UnitPageProps) {
-  const facility = await prisma.facilities.findUnique({
-    where: { id: params.id, isActive: true },
+  const { id } = await params;
+  const facility = await prisma.facility.findUnique({
+    where: { id, isActive: true },
   });
 
   if (!facility) {

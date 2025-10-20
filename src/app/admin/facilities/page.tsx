@@ -12,7 +12,7 @@ export default async function AdminFacilitiesPage() {
   const session = await getServerSession();
   if (!isStaffOrAdmin(session)) redirect("/");
 
-  const facilities = await prisma.facilities.findMany({
+  const facilities = await prisma.facility.findMany({
     orderBy: { createdAt: "desc" },
   });
 

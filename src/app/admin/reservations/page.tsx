@@ -16,16 +16,16 @@ export default async function AdminReservationsPage() {
     redirect("/");
   }
 
-  const bookings = await prisma.bookings.findMany({
+  const bookings = await prisma.booking.findMany({
     include: {
-      facilities: true,
-      users: {
+      facility: true,
+      user: {
         select: {
           name: true,
           email: true,
         },
       },
-      payments: true,
+      payment: true,
     },
     orderBy: { createdAt: "desc" },
   });
@@ -72,7 +72,7 @@ export default async function AdminReservationsPage() {
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-4">
                       <div>
                         <p className="text-sm text-muted-foreground">Facility</p>
-                        <p className="font-medium">{booking.facilities.name}</p>
+                        <p className="font-medium">{booking.facility.name}</p>
                       </div>
                       <div>
                         <p className="text-sm text-muted-foreground">Check-in</p>
@@ -107,7 +107,7 @@ export default async function AdminReservationsPage() {
                               customerPhone: booking.customerPhone,
                               startDate: booking.startDate,
                               endDate: booking.endDate,
-                              notes: booking.notes,
+                              specialRequests: booking.notes,
                               status: booking.status,
                             }}
                           />

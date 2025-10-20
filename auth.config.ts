@@ -1,7 +1,7 @@
-import type { NextAuthConfig } from "next-auth";
+import type { NextAuthOptions } from "next-auth";
 
 // Minimal, edge-safe config for middleware. No providers/adapters here.
-const authConfig: NextAuthConfig = {
+const authConfig: Partial<NextAuthOptions> = {
   pages: {
     signIn: "/login",
     verifyRequest: "/login/verify",
@@ -17,9 +17,7 @@ const authConfig: NextAuthConfig = {
     async session({ session, token }) {
       if (session.user) {
         // Pass through custom fields if present on the token
-        // @ts-expect-error custom props may be present on token
         session.user.id = token?.id as any;
-        // @ts-expect-error custom props may be present on token
         session.user.role = token?.role as any;
       }
       return session;

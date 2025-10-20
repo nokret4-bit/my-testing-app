@@ -35,36 +35,36 @@ export default async function AdminReportsPage() {
     cancelledBookings,
     facilities,
   ] = await Promise.all([
-    prisma.bookings.aggregate({
+    prisma.booking.aggregate({
       where: {
         status: { in: [BookingStatus.CONFIRMED, BookingStatus.COMPLETED] },
       },
       _sum: { totalAmount: true },
     }),
-    prisma.bookings.aggregate({
+    prisma.booking.aggregate({
       where: {
         status: { in: [BookingStatus.CONFIRMED, BookingStatus.COMPLETED] },
         confirmedAt: { gte: monthStart, lte: monthEnd },
       },
       _sum: { totalAmount: true },
     }),
-    prisma.bookings.count(),
-    prisma.bookings.count({
+    prisma.booking.count(),
+    prisma.booking.count({
       where: {
         createdAt: { gte: monthStart, lte: monthEnd },
       },
     }),
-    prisma.bookings.count({
+    prisma.booking.count({
       where: { status: BookingStatus.CONFIRMED },
     }),
-    prisma.bookings.count({
+    prisma.booking.count({
       where: { status: BookingStatus.CANCELLED },
     }),
-    prisma.facilities.count({ where: { isActive: true } }),
+    prisma.facility.count({ where: { isActive: true } }),
   ]);
 
   // Bookings by facility type
-  const bookingsByType = await prisma.bookings.groupBy({
+  const bookingsByType = await prisma.booking.groupBy({
     by: ["facilityId"],
     where: {
       status: { in: [BookingStatus.CONFIRMED, BookingStatus.COMPLETED] },
@@ -73,7 +73,7 @@ export default async function AdminReportsPage() {
     _sum: { totalAmount: true },
   });
 
-  const facilityData = await prisma.facilities.findMany({
+  const facilityData = await prisma.facility.findMany({
     where: {
       id: { in: bookingsByType.map((b) => b.facilityId) },
     },
@@ -89,11 +89,11 @@ export default async function AdminReportsPage() {
   });
 
   // Recent bookings
-  const recentBookings = await prisma.bookings.findMany({
+  const recentBookings = await prisma.booking.findMany({
     take: 10,
     orderBy: { createdAt: "desc" },
     include: {
-      facilities: true,
+      facility: true,
     },
   });
 

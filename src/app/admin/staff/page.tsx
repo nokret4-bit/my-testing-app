@@ -18,7 +18,7 @@ export default async function StaffManagementPage() {
     redirect("/admin");
   }
 
-  const users = await prisma.users.findMany({
+  const users = await prisma.user.findMany({
     where: {
       role: {
         in: ["STAFF", "ADMIN"],

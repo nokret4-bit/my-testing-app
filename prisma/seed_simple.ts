@@ -8,7 +8,7 @@ async function main() {
 
   // Create admin user
   const adminPassword = await bcrypt.hash(process.env.ADMIN_PASSWORD || "admin123", 10);
-  const admin = await prisma.users.upsert({
+  const admin = await prisma.user.upsert({
     where: { email: "admin@clickstay.local" },
     update: {
       passwordHash: adminPassword,
@@ -20,6 +20,8 @@ async function main() {
       name: "Admin User",
       role: Role.ADMIN,
       passwordHash: adminPassword,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     },
   });
   console.log("✅ Created admin user:", admin.email);
@@ -99,10 +101,10 @@ async function main() {
   ];
 
   for (const facility of facilities) {
-    await prisma.facilities.upsert({
+    await prisma.facility.upsert({
       where: { id: facility.id },
-      update: facility,
-      create: facility,
+      update: { ...facility, updatedAt: new Date() },
+      create: { ...facility, createdAt: new Date(), updatedAt: new Date() },
     });
   }
 

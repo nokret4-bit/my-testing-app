@@ -5,11 +5,12 @@ import { getServerSession, isStaffOrAdmin } from "@/lib/auth";
 // GET - Fetch single facility
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const facility = await prisma.facilities.findUnique({
-      where: { id: params.id },
+    const { id } = await params;
+    const facility = await prisma.facility.findUnique({
+      where: { id },
     });
 
     if (!facility) {
@@ -29,9 +30,10 @@ export async function GET(
 // PUT - Update facility
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const session = await getServerSession();
     if (!isStaffOrAdmin(session)) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
@@ -39,8 +41,8 @@ export async function PUT(
 
     const body = await request.json();
 
-    const facility = await prisma.facilities.update({
-      where: { id: params.id },
+    const facility = await prisma.facility.update({
+      where: { id },
       data: {
         name: body.name,
         kind: body.kind,
@@ -70,17 +72,18 @@ export async function PUT(
 // DELETE - Soft delete facility
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const session = await getServerSession();
     if (!isStaffOrAdmin(session)) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
     // Soft delete - just set isActive to false
-    const facility = await prisma.facilities.update({
-      where: { id: params.id },
+    const facility = await prisma.facility.update({
+      where: { id },
       data: {
         isActive: false,
         updatedAt: new Date(),

@@ -4,9 +4,10 @@ import { getServerSession, isAdmin } from "@/lib/auth";
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const session = await getServerSession();
     
     if (!isAdmin(session)) {
@@ -18,7 +19,7 @@ export async function PATCH(
 
     // Update user
     const user = await prisma.user.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         name,
         role,
@@ -50,9 +51,10 @@ export async function PATCH(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const session = await getServerSession();
     
     if (!isAdmin(session)) {
@@ -60,7 +62,7 @@ export async function DELETE(
     }
 
     // Prevent deleting yourself
-    if (params.id === session.user.id) {
+    if (id === session.user.id) {
       return NextResponse.json(
         { error: "Cannot delete your own account" },
         { status: 400 }
@@ -69,7 +71,7 @@ export async function DELETE(
 
     // Delete user
     await prisma.user.delete({
-      where: { id: params.id },
+      where: { id },
     });
 
     // Log audit
@@ -78,7 +80,7 @@ export async function DELETE(
         userId: session.user.id,
         action: "DELETE_STAFF",
         entity: "User",
-        entityId: params.id,
+        entityId: id,
         data: {},
       },
     });

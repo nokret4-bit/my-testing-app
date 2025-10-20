@@ -11,23 +11,18 @@ import { BookingQRCode } from "@/components/booking-qrcode";
 import Link from "next/link";
 
 interface BookingPageProps {
-  params: {
+  params: Promise<{
     code: string;
-  };
+  }>;
 }
 
 export default async function BookingPage({ params }: BookingPageProps) {
+  const { code } = await params;
   const booking = await prisma.booking.findUnique({
-    where: { code: params.code },
+    where: { code },
     include: {
-      facilityUnit: {
-        include: {
-          facilityType: true,
-        },
-      },
-      payments: {
-        orderBy: { createdAt: "desc" },
-      },
+      facility: true,
+      payment: true,
     },
   });
 
@@ -57,11 +52,11 @@ export default async function BookingPage({ params }: BookingPageProps) {
               <CardContent className="space-y-2">
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Facility:</span>
-                  <span className="font-semibold">{booking.facilityUnit.name}</span>
+                  <span className="font-semibold">{booking.facility.name}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Type:</span>
-                  <span>{booking.facilityUnit.facilityType.name}</span>
+                  <span>{booking.facility.kind}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Check-in:</span>
@@ -101,31 +96,19 @@ export default async function BookingPage({ params }: BookingPageProps) {
                 <CardTitle>Payment Summary</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Subtotal:</span>
-                  <span>{formatCurrency(Number(booking.subtotal))}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Tax:</span>
-                  <span>{formatCurrency(Number(booking.taxAmount))}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Service Fee:</span>
-                  <span>{formatCurrency(Number(booking.feeAmount))}</span>
-                </div>
                 <div className="border-t pt-2 mt-2 flex justify-between font-bold text-lg">
-                  <span>Total:</span>
+                  <span>Total Amount:</span>
                   <span>{formatCurrency(Number(booking.totalAmount))}</span>
                 </div>
               </CardContent>
             </Card>
 
             {/* QR Code for Check-in */}
-            {(booking.status === "CONFIRMED" || booking.status === "PAID") && (
+            {booking.status === "CONFIRMED" && (
               <BookingQRCode bookingId={booking.id} bookingCode={booking.code} />
             )}
 
-            {booking.status === "AWAITING_PAYMENT" && (
+            {booking.status === "PENDING" && (
               <Card className="border-primary">
                 <CardHeader>
                   <CardTitle>Payment Required</CardTitle>
@@ -135,7 +118,7 @@ export default async function BookingPage({ params }: BookingPageProps) {
                 </CardHeader>
                 <CardContent>
                   <Button className="w-full" size="lg" asChild>
-                    <Link href={`/checkout?unitId=${booking.facilityUnitId}`}>
+                    <Link href={`/checkout?facilityId=${booking.facilityId}`}>
                       Complete Payment
                     </Link>
                   </Button>
@@ -144,7 +127,7 @@ export default async function BookingPage({ params }: BookingPageProps) {
             )}
 
             {/* Cancel Booking Section */}
-            {(booking.status === "AWAITING_PAYMENT" || booking.status === "PAID" || booking.status === "CONFIRMED") && (
+            {(booking.status === "PENDING" || booking.status === "CONFIRMED") && (
               <Card className="border-destructive/50">
                 <CardHeader>
                   <CardTitle className="text-destructive">Cancel Booking</CardTitle>

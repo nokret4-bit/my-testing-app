@@ -4,18 +4,15 @@ import { getServerSession } from "@/lib/auth";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const booking = await prisma.booking.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
-        facilityUnit: {
-          include: {
-            facilityType: true,
-          },
-        },
-        payments: true,
+        facility: true,
+        payment: true,
         user: {
           select: {
             id: true,

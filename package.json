@@ -15,7 +15,7 @@
     "lint": "eslint .",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev --name init",
-    "prisma:seed": "tsx prisma/seed.ts",
+    "prisma:seed": "tsx prisma/seed_simple.ts",
     "db:reset": "prisma migrate reset --force",
     "postinstall": "prisma generate",
     "create-admin": "node scripts/create-admin.js",

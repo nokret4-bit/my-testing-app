@@ -9,9 +9,10 @@ import { BookingCancelledEmail } from "@/lib/email/templates";
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const session = await getServerSession();
     if (!session?.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -21,13 +22,9 @@ export async function POST(
     const validated = CancelBookingSchema.parse(body);
 
     const booking = await prisma.booking.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
-        facilityUnit: {
-          include: {
-            facilityType: true,
-          },
-        },
+        facility: true,
       },
     });
 
@@ -60,7 +57,7 @@ export async function POST(
 
     // Update booking status
     const updatedBooking = await prisma.booking.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         status: BookingStatus.CANCELLED,
         cancelledAt: new Date(),
@@ -83,7 +80,7 @@ export async function POST(
       BookingCancelledEmail({
         bookingCode: booking.code,
         customerName: booking.customerName,
-        facilityName: booking.facilityUnit.name,
+        facilityName: booking.facility.name,
       })
     );
 

@@ -1,4 +1,4 @@
-import { PrismaClient, FacilityKind, PriceType, Role } from "@prisma/client";
+import { PrismaClient, FacilityKind, Role } from "@prisma/client";
 import { addDays } from "date-fns";
 import bcrypt from "bcryptjs";
 

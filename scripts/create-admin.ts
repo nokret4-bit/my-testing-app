@@ -40,12 +40,14 @@ async function createAdmin() {
     // Create admin user
     const admin = await prisma.user.create({
       data: {
+        id: `admin${Date.now()}`,
         email,
         name,
         passwordHash,
         role: Role.ADMIN,
         isActive: true,
-        emailVerified: new Date(),
+        createdAt: new Date(),
+        updatedAt: new Date(),
       },
     });
 

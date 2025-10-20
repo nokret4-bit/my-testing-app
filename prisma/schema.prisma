@@ -7,7 +7,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model bookings {
+model booking {
   id            String        @id
   code          String        @unique
   userId        String?
@@ -25,9 +25,9 @@ model bookings {
   updatedAt     DateTime
   confirmedAt   DateTime?
   cancelledAt   DateTime?
-  facilities    facilities    @relation(fields: [facilityId], references: [id])
-  users         users?        @relation(fields: [userId], references: [id])
-  payments      payments?
+  facility      facility      @relation(fields: [facilityId], references: [id])
+  user          user?         @relation(fields: [userId], references: [id])
+  payment       payment?
 
   @@index([code])
   @@index([customerEmail])
@@ -35,7 +35,7 @@ model bookings {
   @@index([status])
 }
 
-model facilities {
+model facility {
   id          String       @id
   name        String
   kind        FacilityKind
@@ -47,13 +47,13 @@ model facilities {
   isActive    Boolean      @default(true)
   createdAt   DateTime     @default(now())
   updatedAt   DateTime
-  bookings    bookings[]
+  bookings    booking[]
 
   @@index([isActive])
   @@index([kind])
 }
 
-model payments {
+model payment {
   id            String        @id
   bookingId     String        @unique
   amount        Decimal       @db.Decimal(10, 2)
@@ -63,13 +63,13 @@ model payments {
   createdAt     DateTime      @default(now())
   updatedAt     DateTime
   paidAt        DateTime?
-  bookings      bookings      @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  booking       booking       @relation(fields: [bookingId], references: [id], onDelete: Cascade)
 
   @@index([status])
   @@index([transactionId])
 }
 
-model users {
+model user {
   id            String          @id
   name          String
   email         String          @unique
@@ -79,27 +79,25 @@ model users {
   isActive      Boolean         @default(true)
   createdAt     DateTime        @default(now())
   updatedAt     DateTime
-  bookings      bookings[]
-  activity_logs activity_logs[]
+  bookings      booking[]
+  auditLogs     auditLog[]
 
   @@index([email])
   @@index([role])
 }
 
-model activity_logs {
-  id          String       @id @default(cuid())
-  userId      String?
-  action      ActivityType
-  entityType  String // "booking", "facility", "user", "payment"
-  entityId    String?
-  description String
-  metadata    Json? // Store additional data like old/new values
-  ipAddress   String?
-  createdAt   DateTime     @default(now())
-  users       users?       @relation(fields: [userId], references: [id])
+model auditLog {
+  id        String       @id @default(cuid())
+  userId    String
+  action    String
+  entity    String // "Booking", "Facility", "User", "Payment"
+  entityId  String
+  data      Json? // Store additional data like old/new values
+  createdAt DateTime     @default(now())
+  user      user         @relation(fields: [userId], references: [id])
 
   @@index([userId])
-  @@index([entityType])
+  @@index([entity])
   @@index([createdAt])
 }
 
