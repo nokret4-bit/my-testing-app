@@ -51,15 +51,17 @@ export async function POST(request: NextRequest) {
     });
 
     // Log audit
-    await prisma.auditLog.create({
-      data: {
-        userId: session?.user?.id || "",
-        action: "CREATE_STAFF",
-        entity: "User",
-        entityId: user.id,
-        data: { email, role },
-      },
-    });
+    if (session?.user?.id) {
+      await prisma.auditLog.create({
+        data: {
+          userId: session.user.id,
+          action: "CREATE_STAFF",
+          entity: "User",
+          entityId: user.id,
+          data: { email, role },
+        },
+      });
+    }
 
     return NextResponse.json({ success: true, user: { id: user.id, email: user.email } });
   } catch (error) {

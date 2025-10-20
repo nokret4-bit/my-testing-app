@@ -28,15 +28,17 @@ export async function PATCH(
     });
 
     // Log audit
-    await prisma.auditLog.create({
-      data: {
-        userId: session?.user?.id || "",
-        action: "UPDATE_STAFF",
-        entity: "User",
-        entityId: user.id,
-        data: { name, role, isActive },
-      },
-    });
+    if (session?.user?.id) {
+      await prisma.auditLog.create({
+        data: {
+          userId: session.user.id,
+          action: "UPDATE_STAFF",
+          entity: "User",
+          entityId: user.id,
+          data: { name, role, isActive },
+        },
+      });
+    }
 
     return NextResponse.json({ success: true, user });
   } catch (error) {
@@ -74,15 +76,17 @@ export async function DELETE(
     });
 
     // Log audit
-    await prisma.auditLog.create({
-      data: {
-        userId: session?.user?.id || "",
-        action: "DELETE_STAFF",
-        entity: "User",
-        entityId: id,
-        data: {},
-      },
-    });
+    if (session?.user?.id) {
+      await prisma.auditLog.create({
+        data: {
+          userId: session.user.id,
+          action: "DELETE_STAFF",
+          entity: "User",
+          entityId: id,
+          data: {},
+        },
+      });
+    }
 
     return NextResponse.json({ success: true });
   } catch (error) {

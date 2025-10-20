@@ -1,0 +1,28 @@
+$envContent = @"
+# Database
+DATABASE_URL=$env:DATABASE_URL
+
+# NextAuth - REQUIRED
+NEXTAUTH_SECRET=$env:NEXTAUTH_SECRET
+NEXTAUTH_URL=$env:NEXTAUTH_URL
+
+# Email Configuration - Gmail
+SMTP_HOST=$env:SMTP_HOST
+SMTP_PORT=$env:SMTP_PORT
+SMTP_USER=$env:SMTP_USER
+SMTP_PASSWORD=$env:SMTP_PASSWORD
+SMTP_FROM=$env:SMTP_FROM
+
+# PayMongo Test API Keys
+PAYMONGO_SECRET_KEY=$env:PAYMONGO_SECRET_KEY
+PAYMONGO_PUBLIC_KEY=$env:PAYMONGO_PUBLIC_KEY
+PAYMONGO_WEBHOOK_SECRET=$env:PAYMONGO_WEBHOOK_SECRET
+
+# App
+NEXT_PUBLIC_APP_URL=$env:NEXT_PUBLIC_APP_URL
+NODE_ENV=$env:NODE_ENV
+"@
+
+$envContent | Out-File -FilePath ".env" -Encoding utf8 -NoNewline
+Write-Host "Success: .env file updated successfully!" -ForegroundColor Green
+

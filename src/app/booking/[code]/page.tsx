@@ -8,6 +8,7 @@ import { formatCurrency, formatDateTime } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { CancelBookingButton } from "@/components/cancel-booking-button";
 import { BookingQRCode } from "@/components/booking-qrcode";
+import { BookingStatusChecker } from "@/components/booking-status-checker";
 import Link from "next/link";
 
 interface BookingPageProps {
@@ -33,6 +34,13 @@ export default async function BookingPage({ params }: BookingPageProps) {
   return (
     <div className="flex min-h-screen flex-col">
       <Navbar />
+      
+      {/* Auto-check payment status when user returns from payment */}
+      <BookingStatusChecker 
+        bookingId={booking.id}
+        bookingStatus={booking.status}
+        paymentStatus={booking.payment?.status || null}
+      />
 
       <main className="flex-1 container mx-auto px-4 py-12">
         <div className="max-w-3xl mx-auto">
@@ -118,7 +126,7 @@ export default async function BookingPage({ params }: BookingPageProps) {
                 </CardHeader>
                 <CardContent>
                   <Button className="w-full" size="lg" asChild>
-                    <Link href={`/checkout?facilityId=${booking.facilityId}`}>
+                    <Link href={`/checkout?unitId=${booking.facilityId}`}>
                       Complete Payment
                     </Link>
                   </Button>

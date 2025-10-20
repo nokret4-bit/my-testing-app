@@ -92,9 +92,18 @@ export async function createPaymentIntent(
   });
 
   if (!sourceResponse.ok) {
-    const error = await sourceResponse.json();
-    console.error("PayMongo source creation failed:", error);
-    throw new Error(`PayMongo API error: ${sourceResponse.statusText}`);
+    const errorText = await sourceResponse.text();
+    console.error("PayMongo source creation failed:");
+    console.error("Status:", sourceResponse.status, sourceResponse.statusText);
+    console.error("Response:", errorText);
+    
+    try {
+      const errorJson = JSON.parse(errorText);
+      const errorMessage = errorJson.errors?.[0]?.detail || errorJson.errors?.[0]?.code || sourceResponse.statusText;
+      throw new Error(`PayMongo API error: ${errorMessage}`);
+    } catch (parseError) {
+      throw new Error(`PayMongo API error: ${sourceResponse.statusText} - ${errorText}`);
+    }
   }
 
   const sourceData = (await sourceResponse.json()) as { data: PaymongoSource };

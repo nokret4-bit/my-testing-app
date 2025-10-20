@@ -54,16 +54,18 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // Log audit
-    await prisma.auditLog.create({
-      data: {
-        userId: session?.user?.id || "",
-        action: "CREATE_BOOKING",
-        entity: "Booking",
-        entityId: booking.id,
-        data: { bookingCode, status: booking.status },
-      },
-    });
+    // Log audit (only for authenticated users)
+    if (session?.user?.id) {
+      await prisma.auditLog.create({
+        data: {
+          userId: session.user.id,
+          action: "CREATE_BOOKING",
+          entity: "Booking",
+          entityId: booking.id,
+          data: { bookingCode, status: booking.status },
+        },
+      });
+    }
 
     return NextResponse.json({
       bookingId: booking.id,
