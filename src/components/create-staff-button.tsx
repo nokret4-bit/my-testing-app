@@ -145,17 +145,20 @@ export function CreateStaffButton() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="role">Role</Label>
+              <Label htmlFor="role" className="text-base font-semibold">Role</Label>
               <select
                 id="role"
                 value={formData.role}
                 onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                className="w-full px-3 py-2 border rounded-md"
+                className="w-full px-4 py-3 border-2 rounded-lg text-base font-medium bg-background hover:border-primary focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all cursor-pointer"
                 disabled={loading}
               >
-                <option value="STAFF">Staff</option>
-                <option value="ADMIN">Admin</option>
+                <option value="STAFF" className="py-2">Staff</option>
+                <option value="ADMIN" className="py-2">Admin</option>
               </select>
+              <p className="text-sm text-muted-foreground mt-1">
+                {formData.role === "ADMIN" ? "Full access to all features" : "Limited access based on permissions"}
+              </p>
             </div>
 
             {formData.role === "STAFF" && (

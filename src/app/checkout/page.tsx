@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { formatCurrency } from "@/lib/utils";
+import { ArrowLeft } from "lucide-react";
 
 function CheckoutContent() {
   const searchParams = useSearchParams();
@@ -186,7 +187,17 @@ function CheckoutContent() {
 
       <main className="flex-1 container mx-auto px-4 py-12">
         <div className="max-w-2xl mx-auto">
-          <h1 className="text-4xl font-bold mb-8">Complete Your Booking</h1>
+          <div className="flex items-center gap-4 mb-8">
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => router.back()}
+              className="hover:scale-105 transition-all duration-200"
+            >
+              <ArrowLeft className="h-5 w-5" />
+            </Button>
+            <h1 className="text-4xl font-bold">Complete Your Booking</h1>
+          </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <Card>
