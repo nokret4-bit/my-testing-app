@@ -115,7 +115,13 @@ export default function EditFacilityPage({ params }: EditFacilityPageProps) {
               <p className="text-muted-foreground mt-1">Update facility information</p>
             </div>
             <Link href="/admin/facilities">
-              <Button variant="outline" size="lg">Back to Facilities</Button>
+              <Button 
+                variant="outline" 
+                size="lg"
+                className="hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg cursor-pointer border-2 font-semibold"
+              >
+                Back to Facilities
+              </Button>
             </Link>
           </div>
         </div>
@@ -286,11 +292,21 @@ export default function EditFacilityPage({ params }: EditFacilityPageProps) {
               </div>
 
               <div className="flex gap-4 pt-6 border-t">
-                <Button type="submit" disabled={saving} size="lg" className="flex-1 font-semibold shadow-md">
-                  {saving ? "Saving Changes..." : "Save Changes"}
+                <Button 
+                  type="submit" 
+                  disabled={saving} 
+                  size="lg" 
+                  className="flex-1 font-bold shadow-lg hover:shadow-xl bg-green-600 hover:bg-green-700 text-white hover:scale-105 transition-all duration-200 cursor-pointer"
+                >
+                  {saving ? "Saving Changes..." : "💾 Save Changes"}
                 </Button>
                 <Link href="/admin/facilities" className="flex-1">
-                  <Button type="button" variant="outline" size="lg" className="w-full font-semibold">
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    size="lg" 
+                    className="w-full font-semibold hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg cursor-pointer border-2"
+                  >
                     Cancel
                   </Button>
                 </Link>

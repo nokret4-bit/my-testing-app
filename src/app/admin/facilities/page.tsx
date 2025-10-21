@@ -34,13 +34,22 @@ export default async function AdminFacilitiesPage() {
               </p>
             </div>
             <div className="flex gap-3">
-              <Button variant="outline" size="lg" asChild>
+              <Button 
+                variant="outline" 
+                size="lg" 
+                className="hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg cursor-pointer border-2 font-semibold" 
+                asChild
+              >
                 <Link href="/admin">Back to Dashboard</Link>
               </Button>
-              <Button size="lg" className="bg-primary hover:bg-primary/90 shadow-md" asChild>
+              <Button 
+                size="lg" 
+                className="bg-green-600 hover:bg-green-700 text-white shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200 cursor-pointer font-bold" 
+                asChild
+              >
                 <Link href="/admin/facilities/new">
                   <Plus className="h-5 w-5 mr-2" />
-                  Add Facility
+                  Add New Facility
                 </Link>
               </Button>
             </div>
@@ -104,9 +113,13 @@ export default async function AdminFacilitiesPage() {
               <div className="text-center py-12">
                 <Building2 className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
                 <p className="text-muted-foreground mb-4">No facilities found</p>
-                <Button asChild>
+                <Button 
+                  size="lg" 
+                  className="bg-green-600 hover:bg-green-700 text-white shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200 cursor-pointer font-bold"
+                  asChild
+                >
                   <Link href="/admin/facilities/new">
-                    <Plus className="h-4 w-4 mr-2" />
+                    <Plus className="h-5 w-5 mr-2" />
                     Add Your First Facility
                   </Link>
                 </Button>
@@ -125,16 +138,16 @@ export default async function AdminFacilitiesPage() {
                       <div className="flex items-start gap-6">
                         {/* Photo Thumbnail */}
                         {firstPhoto ? (
-                          <div className="w-40 h-32 rounded-xl overflow-hidden bg-muted flex-shrink-0 shadow-sm border-2">
+                          <div className="w-64 h-48 rounded-xl overflow-hidden bg-muted flex-shrink-0 shadow-lg border-2 hover:shadow-xl transition-shadow duration-300 group">
                             <img
                               src={firstPhoto}
                               alt={facility.name}
-                              className="w-full h-full object-cover"
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                             />
                           </div>
                         ) : (
-                          <div className="w-40 h-32 rounded-xl bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center flex-shrink-0 border-2">
-                            <Building2 className="h-10 w-10 text-muted-foreground" />
+                          <div className="w-64 h-48 rounded-xl bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center flex-shrink-0 border-2 shadow-lg">
+                            <Building2 className="h-16 w-16 text-muted-foreground" />
                           </div>
                         )}
 
@@ -189,16 +202,25 @@ export default async function AdminFacilitiesPage() {
 
                           {/* Actions */}
                           <div className="flex gap-3">
-                            <Button variant="outline" size="default" className="flex-1 font-semibold" asChild>
+                            <Button 
+                              variant="outline" 
+                              size="lg" 
+                              className="flex-1 font-semibold hover:bg-accent hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg cursor-pointer border-2" 
+                              asChild
+                            >
                               <Link href={`/unit/${facility.id}`}>
-                                <Eye className="h-4 w-4 mr-2" />
+                                <Eye className="h-5 w-5 mr-2" />
                                 View Details
                               </Link>
                             </Button>
-                            <Button size="default" className="flex-1 bg-primary hover:bg-primary/90 font-semibold" asChild>
+                            <Button 
+                              size="lg" 
+                              className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl cursor-pointer" 
+                              asChild
+                            >
                               <Link href={`/admin/facilities/${facility.id}/edit`}>
-                                <Edit className="h-4 w-4 mr-2" />
-                                Edit
+                                <Edit className="h-5 w-5 mr-2" />
+                                Edit Facility
                               </Link>
                             </Button>
                             <DeleteFacilityButton 

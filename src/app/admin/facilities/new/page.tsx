@@ -84,31 +84,52 @@ export default function NewFacilityPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <main className="container mx-auto px-4 py-8 max-w-2xl">
-        <Card>
-          <CardHeader>
-            <CardTitle>New Facility</CardTitle>
-            <CardDescription>Add a room, cottage, or hall.</CardDescription>
+      <nav className="border-b bg-card shadow-sm">
+        <div className="container mx-auto px-4 py-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold tracking-tight">Add New Facility</h1>
+              <p className="text-muted-foreground mt-1">Create a new room, cottage, or hall</p>
+            </div>
+            <Button 
+              variant="outline" 
+              size="lg"
+              className="hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg cursor-pointer border-2 font-semibold"
+              onClick={() => router.push('/admin/facilities')}
+            >
+              Back to Facilities
+            </Button>
+          </div>
+        </div>
+      </nav>
+
+      <main className="container mx-auto px-4 py-8 max-w-3xl">
+        <Card className="border-2 shadow-lg">
+          <CardHeader className="bg-muted/30">
+            <CardTitle className="text-2xl">Facility Details</CardTitle>
+            <CardDescription>Fill in the information for the new facility</CardDescription>
           </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
+          <CardContent className="pt-6">
+            <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-2">
-                <Label htmlFor="name">Name</Label>
+                <Label htmlFor="name" className="text-sm font-semibold">Facility Name</Label>
                 <Input
                   id="name"
                   value={form.name}
                   onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
                   required
+                  className="h-11 text-base"
+                  placeholder="e.g., Deluxe Ocean View Room"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="kind">Type</Label>
+                <Label htmlFor="kind" className="text-sm font-semibold">Facility Type</Label>
                 <select
                   id="kind"
                   value={form.kind}
                   onChange={(e) => setForm((f) => ({ ...f, kind: e.target.value }))}
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                  className="flex h-11 w-full rounded-md border-2 border-input bg-background px-3 py-2 text-base font-medium cursor-pointer hover:border-primary transition-colors"
                   required
                 >
                   <option value="ROOM">Room</option>
@@ -118,17 +139,20 @@ export default function NewFacilityPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="description">Description</Label>
-                <Input
+                <Label htmlFor="description" className="text-sm font-semibold">Description</Label>
+                <textarea
                   id="description"
                   value={form.description}
                   onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
+                  className="flex min-h-[100px] w-full rounded-md border-2 border-input bg-background px-3 py-2 text-base resize-none"
+                  placeholder="Describe the facility features, amenities, and highlights..."
+                  rows={4}
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <Label htmlFor="capacity">Capacity</Label>
+                  <Label htmlFor="capacity" className="text-sm font-semibold">Guest Capacity</Label>
                   <Input
                     id="capacity"
                     type="number"
@@ -136,11 +160,13 @@ export default function NewFacilityPage() {
                     value={form.capacity}
                     onChange={(e) => setForm((f) => ({ ...f, capacity: Number(e.target.value) }))}
                     required
+                    className="h-11 text-base"
+                    placeholder="Max guests"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="price">Price (₱)</Label>
+                  <Label htmlFor="price" className="text-sm font-semibold">Price per Night (₱)</Label>
                   <Input
                     id="price"
                     type="number"
@@ -148,6 +174,8 @@ export default function NewFacilityPage() {
                     value={form.price}
                     onChange={(e) => setForm((f) => ({ ...f, price: Number(e.target.value) }))}
                     required
+                    className="h-11 text-base"
+                    placeholder="0.00"
                   />
                 </div>
               </div>
@@ -189,18 +217,34 @@ export default function NewFacilityPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="amenities">Amenities (comma-separated)</Label>
+                <Label htmlFor="amenities" className="text-sm font-semibold">Amenities</Label>
                 <Input
                   id="amenities"
-                  placeholder="WiFi, AC, TV, Mini Fridge"
+                  placeholder="WiFi, AC, TV, Mini Fridge, Hot Shower"
                   value={form.amenities.join(", ")}
                   onChange={(e) => setForm((f) => ({ ...f, amenities: e.target.value.split(",").map(s => s.trim()).filter(Boolean) }))}
+                  className="h-11 text-base"
                 />
+                <p className="text-xs text-muted-foreground">Separate amenities with commas</p>
               </div>
 
-              <div className="pt-2">
-                <Button type="submit" disabled={submitting} className="w-full">
-                  {submitting ? "Creating..." : "Create Facility"}
+              <div className="flex gap-4 pt-6 border-t">
+                <Button 
+                  type="submit" 
+                  disabled={submitting} 
+                  size="lg" 
+                  className="flex-1 font-bold shadow-lg hover:shadow-xl bg-green-600 hover:bg-green-700 text-white hover:scale-105 transition-all duration-200 cursor-pointer"
+                >
+                  {submitting ? "Creating Facility..." : "✨ Create Facility"}
+                </Button>
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  size="lg" 
+                  className="flex-1 font-semibold hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg cursor-pointer border-2"
+                  onClick={() => router.push('/admin/facilities')}
+                >
+                  Cancel
                 </Button>
               </div>
             </form>
