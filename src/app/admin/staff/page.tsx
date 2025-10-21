@@ -29,14 +29,23 @@ export default async function StaffManagementPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <nav className="border-b">
-        <div className="container mx-auto px-4 py-4">
+      <nav className="border-b bg-card shadow-sm">
+        <div className="container mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold">Staff Management</h1>
-            <div className="flex gap-2">
+            <div>
+              <h1 className="text-3xl font-bold tracking-tight">Staff Management</h1>
+              <p className="text-muted-foreground mt-1">Manage staff accounts and permissions</p>
+            </div>
+            <div className="flex gap-3">
               <CreateStaffButton />
               <Link href="/admin">
-                <Button variant="outline">Back to Dashboard</Button>
+                <Button 
+                  variant="outline" 
+                  size="lg"
+                  className="hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg cursor-pointer border-2 font-semibold"
+                >
+                  Back to Dashboard
+                </Button>
               </Link>
             </div>
           </div>
@@ -44,9 +53,9 @@ export default async function StaffManagementPage() {
       </nav>
 
       <main className="container mx-auto px-4 py-8">
-        <Card>
-          <CardHeader>
-            <CardTitle>Staff & Admin Users</CardTitle>
+        <Card className="border-2 shadow-lg">
+          <CardHeader className="bg-muted/30">
+            <CardTitle className="text-2xl">Staff & Admin Users</CardTitle>
             <CardDescription>
               Manage staff accounts, roles, and permissions
             </CardDescription>
@@ -59,20 +68,23 @@ export default async function StaffManagementPage() {
                 {users.map((user) => (
                   <div
                     key={user.id}
-                    className="border rounded-lg p-4 hover:bg-accent/50 transition-colors"
+                    className="border-2 rounded-xl p-6 hover:shadow-md hover:border-orange-400 transition-all duration-200 bg-card"
                   >
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-2">
-                          <h3 className="font-semibold text-lg">{user.name || "No Name"}</h3>
-                          <Badge variant={user.role === "ADMIN" ? "default" : "secondary"}>
+                        <div className="flex items-center gap-3 mb-3">
+                          <h3 className="font-bold text-xl">{user.name || "No Name"}</h3>
+                          <Badge 
+                            variant={user.role === "ADMIN" ? "default" : "secondary"}
+                            className="text-xs font-semibold"
+                          >
                             {user.role}
                           </Badge>
                           {!user.isActive && (
-                            <Badge variant="destructive">Inactive</Badge>
+                            <Badge variant="destructive" className="text-xs font-semibold">Inactive</Badge>
                           )}
                         </div>
-                        <p className="text-sm text-muted-foreground mb-1">
+                        <p className="text-sm text-muted-foreground mb-2 font-medium">
                           {user.email}
                         </p>
                         <p className="text-xs text-muted-foreground">

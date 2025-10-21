@@ -99,22 +99,31 @@ export default async function AdminReportsPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <nav className="border-b">
-        <div className="container mx-auto px-4 py-4">
+      <nav className="border-b bg-card shadow-sm">
+        <div className="container mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold">Reports & Analytics</h1>
-              <p className="text-sm text-muted-foreground">
+              <h1 className="text-3xl font-bold tracking-tight">Reports & Analytics</h1>
+              <p className="text-muted-foreground mt-1">
                 {format(now, "MMMM yyyy")} Overview
               </p>
             </div>
-            <div className="flex gap-2">
-              <Button variant="outline" asChild>
+            <div className="flex gap-3">
+              <Button 
+                variant="outline" 
+                size="lg"
+                className="hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg cursor-pointer border-2 font-semibold"
+                asChild
+              >
                 <Link href="/admin">Back to Dashboard</Link>
               </Button>
-              <Button asChild>
+              <Button 
+                size="lg"
+                className="bg-green-600 hover:bg-green-700 text-white shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200 cursor-pointer font-bold"
+                asChild
+              >
                 <Link href="/api/admin/export">
-                  <Download className="h-4 w-4 mr-2" />
+                  <Download className="h-5 w-5 mr-2" />
                   Export CSV
                 </Link>
               </Button>
@@ -126,10 +135,12 @@ export default async function AdminReportsPage() {
       <main className="container mx-auto px-4 py-8">
         {/* Key Metrics */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Card>
+          <Card className="border-2 border-purple-200 hover:shadow-lg transition-shadow">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
-              <DollarSign className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-medium text-muted-foreground">Total Revenue</CardTitle>
+              <div className="h-10 w-10 rounded-full bg-purple-100 flex items-center justify-center">
+                <DollarSign className="h-5 w-5 text-purple-600" />
+              </div>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">

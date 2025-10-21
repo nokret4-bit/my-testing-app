@@ -32,21 +32,30 @@ export default async function AdminReservationsPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <nav className="border-b">
-        <div className="container mx-auto px-4 py-4">
+      <nav className="border-b bg-card shadow-sm">
+        <div className="container mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold">Reservations</h1>
+            <div>
+              <h1 className="text-3xl font-bold tracking-tight">Reservations</h1>
+              <p className="text-muted-foreground mt-1">Manage all bookings and reservations</p>
+            </div>
             <Link href="/admin">
-              <Button variant="outline">Back to Dashboard</Button>
+              <Button 
+                variant="outline" 
+                size="lg"
+                className="hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg cursor-pointer border-2 font-semibold"
+              >
+                Back to Dashboard
+              </Button>
             </Link>
           </div>
         </div>
       </nav>
 
       <main className="container mx-auto px-4 py-8">
-        <Card>
-          <CardHeader>
-            <CardTitle>All Reservations</CardTitle>
+        <Card className="border-2 shadow-lg">
+          <CardHeader className="bg-muted/30">
+            <CardTitle className="text-2xl">All Reservations</CardTitle>
             <CardDescription>Manage all bookings in the system</CardDescription>
           </CardHeader>
           <CardContent>
@@ -57,42 +66,49 @@ export default async function AdminReservationsPage() {
                 {bookings.map((booking) => (
                   <div
                     key={booking.id}
-                    className="border rounded-lg p-4 hover:bg-accent transition-colors"
+                    className="border-2 rounded-xl p-6 hover:shadow-md hover:border-blue-400 transition-all duration-200 bg-card"
                   >
-                    <div className="flex items-start justify-between mb-2">
+                    <div className="flex items-start justify-between mb-4">
                       <div>
-                        <h3 className="font-semibold text-lg">{booking.code}</h3>
-                        <p className="text-sm text-muted-foreground">
-                          {booking.customerName} ({booking.customerEmail})
+                        <h3 className="font-bold text-xl mb-1">{booking.code}</h3>
+                        <p className="text-sm text-muted-foreground mb-1">
+                          <span className="font-semibold">{booking.customerName}</span>
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {booking.customerEmail}
                         </p>
                       </div>
                       <StatusBadge status={booking.status} />
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-4">
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 bg-muted/30 rounded-lg border">
                       <div>
-                        <p className="text-sm text-muted-foreground">Facility</p>
-                        <p className="font-medium">{booking.facility.name}</p>
+                        <p className="text-xs font-medium text-muted-foreground mb-1">Facility</p>
+                        <p className="font-bold text-base">{booking.facility.name}</p>
                       </div>
                       <div>
-                        <p className="text-sm text-muted-foreground">Check-in</p>
-                        <p className="font-medium">{formatDate(booking.startDate)}</p>
+                        <p className="text-xs font-medium text-muted-foreground mb-1">Check-in</p>
+                        <p className="font-bold text-base">{formatDate(booking.startDate)}</p>
                       </div>
                       <div>
-                        <p className="text-sm text-muted-foreground">Check-out</p>
-                        <p className="font-medium">{formatDate(booking.endDate)}</p>
+                        <p className="text-xs font-medium text-muted-foreground mb-1">Check-out</p>
+                        <p className="font-bold text-base">{formatDate(booking.endDate)}</p>
                       </div>
                       <div>
-                        <p className="text-sm text-muted-foreground">Total</p>
-                        <p className="font-medium">
+                        <p className="text-xs font-medium text-muted-foreground mb-1">Total Amount</p>
+                        <p className="font-bold text-lg text-primary">
                           {formatCurrency(Number(booking.totalAmount))}
                         </p>
                       </div>
                     </div>
 
-                    <div className="mt-4 flex gap-2">
+                    <div className="mt-6 flex gap-3">
                       <Link href={`/booking/${booking.code}`}>
-                        <Button variant="outline" size="sm">
+                        <Button 
+                          variant="outline" 
+                          size="lg"
+                          className="hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg cursor-pointer border-2 font-semibold"
+                        >
                           View Details
                         </Button>
                       </Link>

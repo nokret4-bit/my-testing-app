@@ -45,16 +45,25 @@ export default async function ActivityLogsPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <nav className="border-b">
-        <div className="container mx-auto px-4 py-4">
+      <nav className="border-b bg-card shadow-sm">
+        <div className="container mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Activity className="h-6 w-6" />
-              <h1 className="text-2xl font-bold">Activity Logs</h1>
+            <div>
+              <div className="flex items-center gap-3 mb-1">
+                <div className="h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center">
+                  <Activity className="h-6 w-6 text-indigo-600" />
+                </div>
+                <h1 className="text-3xl font-bold tracking-tight">Activity Logs</h1>
+              </div>
+              <p className="text-muted-foreground ml-13">Track all system activities and changes</p>
             </div>
             <Link href="/admin">
-              <Button variant="outline">
-                <ArrowLeft className="h-4 w-4 mr-2" />
+              <Button 
+                variant="outline" 
+                size="lg"
+                className="hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg cursor-pointer border-2 font-semibold"
+              >
+                <ArrowLeft className="h-5 w-5 mr-2" />
                 Back to Dashboard
               </Button>
             </Link>
@@ -63,9 +72,9 @@ export default async function ActivityLogsPage() {
       </nav>
 
       <main className="container mx-auto px-4 py-8">
-        <Card>
-          <CardHeader>
-            <CardTitle>System Activity</CardTitle>
+        <Card className="border-2 shadow-lg">
+          <CardHeader className="bg-muted/30">
+            <CardTitle className="text-2xl">System Activity</CardTitle>
             <CardDescription>
               Track all admin and staff actions (last 100 entries)
             </CardDescription>
@@ -81,10 +90,12 @@ export default async function ActivityLogsPage() {
                 {logs.map((log) => (
                   <div
                     key={log.id}
-                    className="flex items-start gap-4 p-4 rounded-lg border hover:bg-accent/50 transition-colors"
+                    className="flex items-start gap-4 p-5 rounded-xl border-2 hover:bg-accent/50 hover:border-indigo-400 hover:shadow-md transition-all duration-200"
                   >
                     <div className="flex-shrink-0 mt-1">
-                      <Activity className="h-5 w-5 text-muted-foreground" />
+                      <div className="h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center">
+                        <Activity className="h-5 w-5 text-indigo-600" />
+                      </div>
                     </div>
                     
                     <div className="flex-1 min-w-0">
