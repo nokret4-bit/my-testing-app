@@ -17,10 +17,14 @@
     "prisma:migrate": "prisma migrate dev --name init",
     "prisma:seed": "tsx prisma/seed_simple.ts",
     "db:reset": "prisma migrate reset --force",
+    "db:seed": "tsx prisma/seed_simple.ts",
     "postinstall": "prisma generate",
     "create-admin": "node scripts/create-admin.js",
     "create-cashier": "node scripts/create-cashier.js",
     "test-email": "tsx scripts/test-email.ts"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed_simple.ts"
   },
   "dependencies": {
     "@next-auth/prisma-adapter": "1.0.7",
