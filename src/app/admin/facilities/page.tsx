@@ -24,22 +24,22 @@ export default async function AdminFacilitiesPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <nav className="border-b">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
+      <nav className="border-b bg-card shadow-sm">
+        <div className="container mx-auto px-4 py-6">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
-              <h1 className="text-2xl font-bold">Facility Management</h1>
-              <p className="text-sm text-muted-foreground">
+              <h1 className="text-3xl font-bold tracking-tight">Facility Management</h1>
+              <p className="text-muted-foreground mt-1">
                 Manage rooms, cottages, and function halls
               </p>
             </div>
-            <div className="flex gap-2">
-              <Button variant="outline" asChild>
+            <div className="flex gap-3">
+              <Button variant="outline" size="lg" asChild>
                 <Link href="/admin">Back to Dashboard</Link>
               </Button>
-              <Button asChild>
+              <Button size="lg" className="bg-primary hover:bg-primary/90 shadow-md" asChild>
                 <Link href="/admin/facilities/new">
-                  <Plus className="h-4 w-4 mr-2" />
+                  <Plus className="h-5 w-5 mr-2" />
                   Add Facility
                 </Link>
               </Button>
@@ -51,33 +51,42 @@ export default async function AdminFacilitiesPage() {
       <main className="container mx-auto px-4 py-8">
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Card>
+          <Card className="border-2 hover:shadow-lg transition-shadow">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Total Facilities</CardTitle>
-              <Building2 className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-medium text-muted-foreground">Total Facilities</CardTitle>
+              <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                <Building2 className="h-5 w-5 text-primary" />
+              </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stats.total}</div>
+              <div className="text-3xl font-bold">{stats.total}</div>
+              <p className="text-xs text-muted-foreground mt-1">All properties</p>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="border-2 border-green-200 hover:shadow-lg transition-shadow">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Active</CardTitle>
-              <Building2 className="h-4 w-4 text-green-500" />
+              <CardTitle className="text-sm font-medium text-muted-foreground">Active</CardTitle>
+              <div className="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center">
+                <Building2 className="h-5 w-5 text-green-600" />
+              </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stats.active}</div>
+              <div className="text-3xl font-bold text-green-600">{stats.active}</div>
+              <p className="text-xs text-muted-foreground mt-1">Available for booking</p>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="border-2 hover:shadow-lg transition-shadow">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Inactive</CardTitle>
-              <Building2 className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-sm font-medium text-muted-foreground">Inactive</CardTitle>
+              <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center">
+                <Building2 className="h-5 w-5 text-muted-foreground" />
+              </div>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{stats.inactive}</div>
+              <div className="text-3xl font-bold">{stats.inactive}</div>
+              <p className="text-xs text-muted-foreground mt-1">Not visible to guests</p>
             </CardContent>
           </Card>
         </div>
@@ -111,12 +120,12 @@ export default async function AdminFacilitiesPage() {
                   return (
                     <div
                       key={facility.id}
-                      className="border rounded-lg p-6 hover:bg-accent/50 transition-colors"
+                      className="border-2 rounded-xl p-6 hover:shadow-md hover:border-primary/50 transition-all duration-200 bg-card"
                     >
                       <div className="flex items-start gap-6">
                         {/* Photo Thumbnail */}
                         {firstPhoto ? (
-                          <div className="w-32 h-24 rounded-lg overflow-hidden bg-muted flex-shrink-0">
+                          <div className="w-40 h-32 rounded-xl overflow-hidden bg-muted flex-shrink-0 shadow-sm border-2">
                             <img
                               src={firstPhoto}
                               alt={facility.name}
@@ -124,23 +133,29 @@ export default async function AdminFacilitiesPage() {
                             />
                           </div>
                         ) : (
-                          <div className="w-32 h-24 rounded-lg bg-muted flex items-center justify-center flex-shrink-0">
-                            <Building2 className="h-8 w-8 text-muted-foreground" />
+                          <div className="w-40 h-32 rounded-xl bg-gradient-to-br from-muted to-muted/50 flex items-center justify-center flex-shrink-0 border-2">
+                            <Building2 className="h-10 w-10 text-muted-foreground" />
                           </div>
                         )}
 
                         {/* Facility Info */}
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-start justify-between mb-2">
+                          <div className="flex items-start justify-between mb-3">
                             <div>
-                              <h3 className="text-lg font-semibold mb-1">{facility.name}</h3>
-                              <div className="flex items-center gap-2 mb-2">
-                                <Badge variant="secondary">
+                              <h3 className="text-xl font-bold mb-2">{facility.name}</h3>
+                              <div className="flex items-center gap-2">
+                                <Badge variant="secondary" className="text-xs font-semibold">
                                   {facility.kind}
                                 </Badge>
-                                <Badge variant={facility.isActive ? "default" : "outline"}>
-                                  {facility.isActive ? "Active" : "Inactive"}
-                                </Badge>
+                                {facility.isActive ? (
+                                  <Badge className="bg-green-100 text-green-700 hover:bg-green-200 text-xs font-semibold">
+                                    ● Active
+                                  </Badge>
+                                ) : (
+                                  <Badge variant="outline" className="text-xs font-semibold">
+                                    ○ Inactive
+                                  </Badge>
+                                )}
                               </div>
                             </div>
                           </div>
@@ -150,36 +165,39 @@ export default async function AdminFacilitiesPage() {
                           </p>
 
                           {/* Stats */}
-                          <div className="grid grid-cols-2 gap-4 mb-4">
+                          <div className="grid grid-cols-2 gap-6 mb-6 p-4 bg-muted/30 rounded-lg border">
                             <div>
-                              <p className="text-xs text-muted-foreground">Capacity</p>
-                              <div className="flex items-center gap-1 mt-1">
-                                <Users className="h-3 w-3" />
-                                <span className="text-sm font-medium">
+                              <p className="text-xs font-medium text-muted-foreground mb-2">Capacity</p>
+                              <div className="flex items-center gap-2">
+                                <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                                  <Users className="h-4 w-4 text-primary" />
+                                </div>
+                                <span className="text-lg font-bold">
                                   {facility.capacity} guests
                                 </span>
                               </div>
                             </div>
                             <div>
-                              <p className="text-xs text-muted-foreground">Price</p>
-                              <p className="text-lg font-bold mt-1">
-                                ₱{Number(facility.price).toLocaleString()}
-                              </p>
-                              <p className="text-xs text-muted-foreground mt-1">per night</p>
+                              <p className="text-xs font-medium text-muted-foreground mb-2">Price per Night</p>
+                              <div className="flex items-baseline gap-1">
+                                <span className="text-2xl font-bold text-primary">
+                                  ₱{Number(facility.price).toLocaleString()}
+                                </span>
+                              </div>
                             </div>
                           </div>
 
                           {/* Actions */}
-                          <div className="flex gap-2">
-                            <Button variant="outline" size="sm" asChild>
+                          <div className="flex gap-3">
+                            <Button variant="outline" size="default" className="flex-1 font-semibold" asChild>
                               <Link href={`/unit/${facility.id}`}>
-                                <Eye className="h-3 w-3 mr-1" />
-                                View
+                                <Eye className="h-4 w-4 mr-2" />
+                                View Details
                               </Link>
                             </Button>
-                            <Button variant="outline" size="sm" asChild>
+                            <Button size="default" className="flex-1 bg-primary hover:bg-primary/90 font-semibold" asChild>
                               <Link href={`/admin/facilities/${facility.id}/edit`}>
-                                <Edit className="h-3 w-3 mr-1" />
+                                <Edit className="h-4 w-4 mr-2" />
                                 Edit
                               </Link>
                             </Button>

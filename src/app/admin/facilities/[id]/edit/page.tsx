@@ -107,38 +107,43 @@ export default function EditFacilityPage({ params }: EditFacilityPageProps) {
 
   return (
     <div className="min-h-screen bg-background">
-      <nav className="border-b">
-        <div className="container mx-auto px-4 py-4">
+      <nav className="border-b bg-card shadow-sm">
+        <div className="container mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold">Edit Facility</h1>
+            <div>
+              <h1 className="text-3xl font-bold tracking-tight">Edit Facility</h1>
+              <p className="text-muted-foreground mt-1">Update facility information</p>
+            </div>
             <Link href="/admin/facilities">
-              <Button variant="outline">Back to Facilities</Button>
+              <Button variant="outline" size="lg">Back to Facilities</Button>
             </Link>
           </div>
         </div>
       </nav>
 
-      <main className="container mx-auto px-4 py-8 max-w-2xl">
-        <Card>
-          <CardHeader>
-            <CardTitle>Facility Details</CardTitle>
+      <main className="container mx-auto px-4 py-8 max-w-3xl">
+        <Card className="border-2 shadow-lg">
+          <CardHeader className="bg-muted/30">
+            <CardTitle className="text-2xl">Facility Details</CardTitle>
           </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <Label htmlFor="name">Name</Label>
+          <CardContent className="pt-6">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="space-y-2">
+                <Label htmlFor="name" className="text-sm font-semibold">Facility Name</Label>
                 <Input
                   id="name"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   required
+                  className="h-11 text-base"
+                  placeholder="e.g., Deluxe Ocean View Room"
                 />
               </div>
 
-              <div>
-                <Label htmlFor="kind">Type</Label>
+              <div className="space-y-2">
+                <Label htmlFor="kind" className="text-sm font-semibold">Facility Type</Label>
                 <Select value={formData.kind} onValueChange={(value) => setFormData({ ...formData, kind: value })}>
-                  <SelectTrigger>
+                  <SelectTrigger className="h-11 text-base">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -149,19 +154,21 @@ export default function EditFacilityPage({ params }: EditFacilityPageProps) {
                 </Select>
               </div>
 
-              <div>
-                <Label htmlFor="description">Description</Label>
+              <div className="space-y-2">
+                <Label htmlFor="description" className="text-sm font-semibold">Description</Label>
                 <Textarea
                   id="description"
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  rows={3}
+                  rows={4}
+                  className="text-base resize-none"
+                  placeholder="Describe the facility features, amenities, and highlights..."
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="capacity">Capacity</Label>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <Label htmlFor="capacity" className="text-sm font-semibold">Guest Capacity</Label>
                   <Input
                     id="capacity"
                     type="number"
@@ -169,11 +176,13 @@ export default function EditFacilityPage({ params }: EditFacilityPageProps) {
                     value={formData.capacity}
                     onChange={(e) => setFormData({ ...formData, capacity: parseInt(e.target.value) })}
                     required
+                    className="h-11 text-base"
+                    placeholder="Max guests"
                   />
                 </div>
 
-                <div>
-                  <Label htmlFor="price">Price (₱)</Label>
+                <div className="space-y-2">
+                  <Label htmlFor="price" className="text-sm font-semibold">Price per Night (₱)</Label>
                   <Input
                     id="price"
                     type="number"
@@ -182,23 +191,27 @@ export default function EditFacilityPage({ params }: EditFacilityPageProps) {
                     value={formData.price}
                     onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) })}
                     required
+                    className="h-11 text-base"
+                    placeholder="0.00"
                   />
                 </div>
               </div>
 
-              <div>
-                <Label htmlFor="amenities">Amenities (comma-separated)</Label>
+              <div className="space-y-2">
+                <Label htmlFor="amenities" className="text-sm font-semibold">Amenities</Label>
                 <Input
                   id="amenities"
                   value={formData.amenities.join(", ")}
                   onChange={(e) => setFormData({ ...formData, amenities: e.target.value.split(",").map(s => s.trim()) })}
-                  placeholder="WiFi, AC, TV, Mini Fridge"
+                  placeholder="WiFi, AC, TV, Mini Fridge, Hot Shower"
+                  className="h-11 text-base"
                 />
+                <p className="text-xs text-muted-foreground">Separate amenities with commas</p>
               </div>
 
-              <div>
-                <Label htmlFor="photos">Photos</Label>
-                <div className="space-y-2">
+              <div className="space-y-2">
+                <Label htmlFor="photos" className="text-sm font-semibold">Photos</Label>
+                <div className="space-y-3">
                   <Input
                     id="photo-upload"
                     type="file"
@@ -259,23 +272,25 @@ export default function EditFacilityPage({ params }: EditFacilityPageProps) {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3 p-4 bg-muted/30 rounded-lg border-2">
                 <input
                   type="checkbox"
                   id="isActive"
                   checked={formData.isActive}
                   onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                  className="h-4 w-4"
+                  className="h-5 w-5 cursor-pointer"
                 />
-                <Label htmlFor="isActive" className="cursor-pointer">Active (visible to customers)</Label>
+                <Label htmlFor="isActive" className="cursor-pointer font-medium text-base">
+                  Active (visible to customers for booking)
+                </Label>
               </div>
 
-              <div className="flex gap-2 pt-4">
-                <Button type="submit" disabled={saving} className="flex-1">
-                  {saving ? "Saving..." : "Save Changes"}
+              <div className="flex gap-4 pt-6 border-t">
+                <Button type="submit" disabled={saving} size="lg" className="flex-1 font-semibold shadow-md">
+                  {saving ? "Saving Changes..." : "Save Changes"}
                 </Button>
                 <Link href="/admin/facilities" className="flex-1">
-                  <Button type="button" variant="outline" className="w-full">
+                  <Button type="button" variant="outline" size="lg" className="w-full font-semibold">
                     Cancel
                   </Button>
                 </Link>
