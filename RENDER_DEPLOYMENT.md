@@ -39,13 +39,9 @@ Visit your Render URL and check:
 
 Make sure these are set in your Render dashboard under **Environment**:
 
-- `DATABASE_URL` - PostgreSQL connection string with pooling parameters:
+- `DATABASE_URL` - PostgreSQL connection string with timeout parameters:
   ```
-  postgresql://USER:PASSWORD@HOST/DATABASE?pgbouncer=true&connection_limit=1&pool_timeout=30
-  ```
-- `DIRECT_URL` - Direct database URL for migrations (without pooling):
-  ```
-  postgresql://USER:PASSWORD@HOST/DATABASE?connect_timeout=30
+  postgresql://USER:PASSWORD@HOST/DATABASE?connect_timeout=30&pool_timeout=30
   ```
 - `NEXTAUTH_SECRET` - Secret for NextAuth.js authentication
 - `NEXTAUTH_URL` - Your Render app URL (e.g., `https://your-app.onrender.com`)
@@ -75,19 +71,17 @@ If you see: `Error: P1002 - The database server was reached but timed out`
 **Solution**:
 1. In Render Dashboard → Your PostgreSQL Database → Info tab
 2. Copy the **Internal Database URL**
-3. In your Web Service → Environment tab, update:
-   - `DATABASE_URL`: Add `?pgbouncer=true&connection_limit=1&pool_timeout=30`
-   - `DIRECT_URL`: Add `?connect_timeout=30` (use same base URL as DATABASE_URL)
-4. Redeploy your service
+3. In your Web Service → Environment tab, update `DATABASE_URL`:
+   - Add `?connect_timeout=30&pool_timeout=30` to the end
+4. Save and redeploy
 
 Example:
 ```
-DATABASE_URL=postgresql://user:pass@host/db?pgbouncer=true&connection_limit=1&pool_timeout=30
-DIRECT_URL=postgresql://user:pass@host/db?connect_timeout=30
+DATABASE_URL=postgresql://user:pass@host/db?connect_timeout=30&pool_timeout=30
 ```
 
 ### If migrations fail:
-- Check that `DATABASE_URL` and `DIRECT_URL` are correctly set
+- Check that `DATABASE_URL` is correctly set with timeout parameters
 - Verify the PostgreSQL database is accessible and not suspended
 - Check Render build logs for specific errors
 - Ensure your database is on a paid plan or recently active (free tier spins down)

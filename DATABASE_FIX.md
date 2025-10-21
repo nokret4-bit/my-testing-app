@@ -25,26 +25,17 @@ Render's free-tier PostgreSQL databases spin down after 15 minutes of inactivity
 ### Step 2: Update Your Web Service Environment Variables
 1. Go to your **Web Service** in Render Dashboard
 2. Click on **Environment** in the left sidebar
-3. Update or add these environment variables:
+3. Find the `DATABASE_URL` variable and click Edit
+4. Update it to include connection timeout parameters:
 
-#### DATABASE_URL (for application runtime)
+#### DATABASE_URL
 ```
-postgresql://clickstay_db_user:RU8PQtkCHM0DRiEOnxQtvrxfBGVJUCjz@dpg-d3r1ihodl3ps73canb30-a.oregon-postgres.render.com/clickstay_db?pgbouncer=true&connection_limit=1&pool_timeout=30
-```
-
-**What this does:**
-- `pgbouncer=true` - Enables connection pooling
-- `connection_limit=1` - Limits connections (important for free tier)
-- `pool_timeout=30` - Waits 30 seconds for a connection
-
-#### DIRECT_URL (for migrations)
-```
-postgresql://clickstay_db_user:RU8PQtkCHM0DRiEOnxQtvrxfBGVJUCjz@dpg-d3r1ihodl3ps73canb30-a.oregon-postgres.render.com/clickstay_db?connect_timeout=30
+postgresql://clickstay_db_user:RU8PQtkCHM0DRiEOnxQtvrxfBGVJUCjz@dpg-d3r1ihodl3ps73canb30-a.oregon-postgres.render.com/clickstay_db?connect_timeout=30&pool_timeout=30
 ```
 
 **What this does:**
-- `connect_timeout=30` - Waits 30 seconds for database to wake up
-- No pooling - direct connection needed for migrations
+- `connect_timeout=30` - Waits 30 seconds for database to wake up (fixes migration timeout)
+- `pool_timeout=30` - Waits 30 seconds for a connection from the pool
 
 ### Step 3: Commit and Push Changes
 The code changes have been made to:

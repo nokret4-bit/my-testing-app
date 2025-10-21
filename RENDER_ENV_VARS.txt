@@ -9,12 +9,7 @@ Add/Update these variables:
 ----------------------------------------
 DATABASE_URL
 ----------------------------------------
-postgresql://clickstay_db_user:RU8PQtkCHM0DRiEOnxQtvrxfBGVJUCjz@dpg-d3r1ihodl3ps73canb30-a.oregon-postgres.render.com/clickstay_db?pgbouncer=true&connection_limit=1&pool_timeout=30
-
-----------------------------------------
-DIRECT_URL
-----------------------------------------
-postgresql://clickstay_db_user:RU8PQtkCHM0DRiEOnxQtvrxfBGVJUCjz@dpg-d3r1ihodl3ps73canb30-a.oregon-postgres.render.com/clickstay_db?connect_timeout=30
+postgresql://clickstay_db_user:RU8PQtkCHM0DRiEOnxQtvrxfBGVJUCjz@dpg-d3r1ihodl3ps73canb30-a.oregon-postgres.render.com/clickstay_db?connect_timeout=30&pool_timeout=30
 
 ----------------------------------------
 NEXTAUTH_SECRET
