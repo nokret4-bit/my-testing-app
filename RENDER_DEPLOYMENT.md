@@ -39,7 +39,14 @@ Visit your Render URL and check:
 
 Make sure these are set in your Render dashboard under **Environment**:
 
-- `DATABASE_URL` - PostgreSQL connection string (auto-provided by Render)
+- `DATABASE_URL` - PostgreSQL connection string with pooling parameters:
+  ```
+  postgresql://USER:PASSWORD@HOST/DATABASE?pgbouncer=true&connection_limit=1&pool_timeout=30
+  ```
+- `DIRECT_URL` - Direct database URL for migrations (without pooling):
+  ```
+  postgresql://USER:PASSWORD@HOST/DATABASE?connect_timeout=30
+  ```
 - `NEXTAUTH_SECRET` - Secret for NextAuth.js authentication
 - `NEXTAUTH_URL` - Your Render app URL (e.g., `https://your-app.onrender.com`)
 - `ADMIN_PASSWORD` - (Optional) Custom admin password, defaults to `admin123`
@@ -59,10 +66,31 @@ This ensures:
 
 ## Troubleshooting
 
+### Database Connection Timeout (P1002 Error)
+
+If you see: `Error: P1002 - The database server was reached but timed out`
+
+**Cause**: Render's free-tier PostgreSQL databases spin down after inactivity, causing connection timeouts during migrations.
+
+**Solution**:
+1. In Render Dashboard → Your PostgreSQL Database → Info tab
+2. Copy the **Internal Database URL**
+3. In your Web Service → Environment tab, update:
+   - `DATABASE_URL`: Add `?pgbouncer=true&connection_limit=1&pool_timeout=30`
+   - `DIRECT_URL`: Add `?connect_timeout=30` (use same base URL as DATABASE_URL)
+4. Redeploy your service
+
+Example:
+```
+DATABASE_URL=postgresql://user:pass@host/db?pgbouncer=true&connection_limit=1&pool_timeout=30
+DIRECT_URL=postgresql://user:pass@host/db?connect_timeout=30
+```
+
 ### If migrations fail:
-- Check that `DATABASE_URL` is correctly set
-- Verify the PostgreSQL database is accessible
+- Check that `DATABASE_URL` and `DIRECT_URL` are correctly set
+- Verify the PostgreSQL database is accessible and not suspended
 - Check Render build logs for specific errors
+- Ensure your database is on a paid plan or recently active (free tier spins down)
 
 ### If tables still don't exist:
 - Manually run in Render shell: `npx prisma migrate deploy`

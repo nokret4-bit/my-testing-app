@@ -1,0 +1,53 @@
+========================================
+RENDER ENVIRONMENT VARIABLES - COPY/PASTE READY
+========================================
+
+Go to: Render Dashboard → Your Web Service → Environment
+
+Add/Update these variables:
+
+----------------------------------------
+DATABASE_URL
+----------------------------------------
+postgresql://clickstay_db_user:RU8PQtkCHM0DRiEOnxQtvrxfBGVJUCjz@dpg-d3r1ihodl3ps73canb30-a.oregon-postgres.render.com/clickstay_db?pgbouncer=true&connection_limit=1&pool_timeout=30
+
+----------------------------------------
+DIRECT_URL
+----------------------------------------
+postgresql://clickstay_db_user:RU8PQtkCHM0DRiEOnxQtvrxfBGVJUCjz@dpg-d3r1ihodl3ps73canb30-a.oregon-postgres.render.com/clickstay_db?connect_timeout=30
+
+----------------------------------------
+NEXTAUTH_SECRET
+----------------------------------------
+Generate with: openssl rand -base64 32
+Or use any random 32+ character string
+
+----------------------------------------
+NEXTAUTH_URL
+----------------------------------------
+https://your-app-name.onrender.com
+(Replace with your actual Render URL)
+
+----------------------------------------
+ADMIN_PASSWORD (Optional)
+----------------------------------------
+admin123
+(Or choose your own secure password)
+
+----------------------------------------
+RENDER
+----------------------------------------
+true
+
+========================================
+AFTER SETTING THESE:
+========================================
+1. Save changes in Render
+2. Commit and push your code changes:
+   git add .
+   git commit -m "Fix database connection timeout"
+   git push origin main
+3. Render will auto-deploy
+4. After successful deployment, run in Shell:
+   npm run prisma:seed
+========================================
